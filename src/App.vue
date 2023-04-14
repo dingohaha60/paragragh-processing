@@ -26,34 +26,50 @@ let theEnds = ref("");
 let theResult = reactive({});
 
 function transfrom() {
-    console.log("thePara",thePara);
-    let splitted = thePara.value.split("\n");
-    let theEndsSplits = theEnds.value.split("\n");
-    let jointedThePara = splitted.join(" ");
+  console.log("thePara", thePara);
+  let splitted = thePara.value.split("\n");
+  let theEndsSplits = theEnds.value.split("\n");
+  let jointedThePara = splitted.join(" ");
 
-    // jointedThePara.split();
-    let thePattern="";
-    thePattern = new RegExp(("("+theEndsSplits.join(")|(")+")").replaceAll(".","\\."),"g");
+  // jointedThePara.split();
+  let thePattern = "";
+  thePattern = new RegExp(
+    ("(" + theEndsSplits.join(")|(") + ")").replaceAll(".", "\\."),
+    "g"
+  );
 
+  // thePattern = thePattern.substring(0,thePattern.length-1);
+  let matches = jointedThePara.matchAll(thePattern);
+  let preMatch = [];
+  preMatch["index"] = 0;
+  preMatch.push("");
+  let theResultStr = "";
+  for (const match of matches) {
+    // console.log("the result splits",thePattern.substring(match.index))
+    theResultStr =
+      theResultStr +
+      jointedThePara
+        .substring(
+          preMatch.index + preMatch[0].length,
+          match.index + match[0].length
+        )
+        .trim() +
+      "\n\n";
+    // console.log("the result splits:",theResultStr);
+    preMatch = match;
+  }
 
-    // thePattern = thePattern.substring(0,thePattern.length-1);
-    let matches = jointedThePara.matchAll(thePattern);
-    let preMatch = [];
-    preMatch["index"]=0;
-    preMatch.push("");
-    let theResultStr ="";
-    for (const match of matches) {
-        // console.log("the result splits",thePattern.substring(match.index))
-        theResultStr = theResultStr+jointedThePara.substring(preMatch.index+preMatch[0].length,match.index+match[0].length).trim()+"\n\n";
-        // console.log("the result splits:",theResultStr);
-        preMatch = match;
-    }
+  if (preMatch.index + preMatch[0].length != jointedThePara.length) {
+    theResultStr += jointedThePara.substring(
+      preMatch.index + preMatch[0].length,
+      jointedThePara.length
+    );
+  }
 
-    if(preMatch.index+preMatch[0].length!=jointedThePara.length){
-      theResultStr+=jointedThePara.substring(preMatch.index+preMatch[0].length,jointedThePara.length);
-    }
-
-    theResultStr = theResultStr.replaceAll("’","'").replaceAll("“","\"").replaceAll("”","\"");
+  theResultStr = theResultStr
+    .replaceAll("’", "'")
+    .replaceAll("“", '"')
+    .replaceAll("”", '"');
 
   theResult.str = theResultStr;
 }
