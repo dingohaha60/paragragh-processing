@@ -53,6 +53,10 @@ function transfrom() {
         // console.log("the result splits:",theResultStr);
         preMatch = match;
     }
+    
+    if(preMatch.index+preMatch[0].length!=jointedThePara.length){
+      theResultStr+=jointedThePara.substring(preMatch.index+preMatch[0].length,jointedThePara.length)
+    }
 
     theResult.str= theResultStr;
 }
